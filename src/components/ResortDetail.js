@@ -1,8 +1,11 @@
-import { conditionColor, snowColor } from '../lib/conditions.js'
+import { conditionColor, conditionsScore, snowColor } from '../lib/conditions.js'
+import ScoreBadge from './ScoreBadge.js'
 
 const days = ['Today', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed']
 
 export default function ResortDetail({ featured, resorts }) {
+  const featuredScore = conditionsScore(featured.weather)
+
   return (
     <main className="flex-1 overflow-y-auto bg-neutral-950">
       <div className="p-8 max-w-6xl">
@@ -10,9 +13,12 @@ export default function ResortDetail({ featured, resorts }) {
         {/* Resort header */}
         <div className="flex items-start justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-semibold text-white tracking-tight">
-              {featured.name}
-            </h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-3xl font-semibold text-white tracking-tight">
+                {featured.name}
+              </h1>
+              <ScoreBadge score={featuredScore} size="lg" />
+            </div>
             <div className="flex items-center gap-3 mt-2">
               <span className="text-sm text-neutral-400">
                 {featured.state} · {featured.summit_elevation.toLocaleString()}ft summit

@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { conditionColor } from '../lib/conditions.js'
+import { conditionColor, conditionsScore } from '../lib/conditions.js'
+import ScoreBadge from './ScoreBadge.js'
 
 export default function Sidebar({ resorts, activeId }) {
   return (
@@ -24,6 +25,7 @@ export default function Sidebar({ resorts, activeId }) {
               <span className={`text-sm flex-1 truncate ${isActive ? 'text-white font-medium' : 'text-neutral-400'}`}>
                 {resort.name}
               </span>
+              <ScoreBadge score={conditionsScore(resort.weather)} />
               <span className="text-xs text-neutral-500 flex-shrink-0">
                 {resort.weather.snowDepth}"
               </span>
