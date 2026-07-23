@@ -1,9 +1,10 @@
 import { conditionColor, conditionsScore, snowColor } from '../lib/conditions.js'
 import ScoreBadge from './ScoreBadge.js'
+import LiftStatusCard from './LiftStatusCard.js'
 
 const days = ['Today', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed']
 
-export default function ResortDetail({ featured, resorts }) {
+export default function ResortDetail({ featured, resorts, liftStatus }) {
   const featuredScore = conditionsScore(featured.weather)
 
   return (
@@ -105,6 +106,9 @@ export default function ResortDetail({ featured, resorts }) {
             </div>
           </div>
         </div>
+
+        {/* Lift status */}
+        <LiftStatusCard slug={featured.liftie_slug} liftStatus={liftStatus} />
 
         {/* All resorts table */}
         <div className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden">
