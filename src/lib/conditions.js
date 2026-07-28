@@ -10,8 +10,16 @@ export function snowColor(inches) {
   return 'text-neutral-600'
 }
 
-function clamp(value) {
-  return Math.min(Math.max(value, 0), 100)
+export function clamp(value, min = 0, max = 100) {
+  return Math.min(Math.max(value, min), max)
+}
+
+export function scoreFromValue(value, max) {
+  return clamp((value / max) * 100)
+}
+
+export function scoreFromValueInverse(value, max) {
+  return clamp(100 - (value / max) * 100)
 }
 
 export function conditionsScore(weather) {
@@ -24,10 +32,10 @@ export function conditionsScore(weather) {
     return null
   }
 
-  const depthScore = clamp((weather.snowDepth / 200) * 100)
-  const snowfallScore = clamp((weather.snowfall / 20) * 100)
-  const windScore = clamp(100 - (weather.windSpeed / 80) * 100)
-  const tempScore = clamp(((50 - weather.temp) / 50) * 100)
+  const depthScore = scoreFromValue(weather.snowDepth, 200)
+  const snowfallScore = scoreFromValue(weather.snowfall, 20)
+  const windScore = scoreFromValueInverse(weather.windSpeed, 80)
+  const tempScore = scoreFromValueInverse(weather.temp, 50)
 
   const score =
     depthScore * 0.4 +

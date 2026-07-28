@@ -1,3 +1,5 @@
+import BestForMe from './BestForMe.js'
+
 export default function Nav() {
   return (
     <nav className="flex items-center gap-4 px-6 h-14 bg-neutral-900 border-b border-neutral-800 flex-shrink-0">
@@ -23,9 +25,7 @@ export default function Nav() {
           </button>
         ))}
       </div>
-      <button className="ml-auto text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2 rounded-full transition-colors whitespace-nowrap">
-        Best for me ↗
-      </button>
+      <BestForMe />
     </nav>
   )
 }
