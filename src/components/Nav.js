@@ -1,6 +1,22 @@
+'use client'
+
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import BestForMe from './BestForMe.js'
 
+const NAV_LINKS = [
+  { label: 'Conditions', href: '/' },
+  { label: 'Map', href: '/map' },
+]
+
 export default function Nav() {
+  const pathname = usePathname()
+
+  function isActive(href) {
+    if (href === '/') return pathname === '/' || pathname.startsWith('/resort')
+    return pathname === href
+  }
+
   return (
     <nav className="flex items-center gap-4 px-6 h-14 bg-neutral-900 border-b border-neutral-800 flex-shrink-0">
       <div className="flex items-center gap-2.5">
@@ -15,13 +31,26 @@ export default function Nav() {
         <span className="text-neutral-500 text-sm">Search any resort...</span>
       </div>
       <div className="flex items-center gap-0.5 ml-2">
-        {['Conditions', 'Forecast', 'Map', 'Alerts'].map(link => (
-          <button key={link} className={`text-sm px-3 py-1.5 rounded-lg transition-colors ${
-            link === 'Conditions'
-              ? 'text-white bg-neutral-800 font-medium'
-              : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
-          }`}>
-            {link}
+        {NAV_LINKS.map(({ label, href }) => (
+          <Link
+            key={label}
+            href={href}
+            className={`text-sm px-3 py-1.5 rounded-lg transition-colors ${
+              isActive(href)
+                ? 'text-white bg-neutral-800 font-medium'
+                : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
+            }`}
+          >
+            {label}
+          </Link>
+        ))}
+        {['Forecast', 'Alerts'].map(label => (
+          <button
+            key={label}
+            disabled
+            className="text-sm px-3 py-1.5 rounded-lg text-neutral-600 cursor-not-allowed"
+          >
+            {label}
           </button>
         ))}
       </div>
