@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from 'react'
 import mapboxgl from 'mapbox-gl'
-import 'mapbox-gl/dist/mapbox-gl.css'
 import { conditionsScore } from '../lib/conditions.js'
 
 const SCORE_COLOR = {
@@ -70,9 +69,9 @@ function popupHTML(resort, score) {
 export default function MapView({ resorts }) {
   const containerRef = useRef(null)
   const mapRef = useRef(null)
+  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
 
   useEffect(() => {
-    const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
     if (!token || !containerRef.current) return
 
     mapboxgl.accessToken = token
@@ -106,11 +105,23 @@ export default function MapView({ resorts }) {
     })
 
     return () => map.remove()
-  }, [resorts])
+  }, [resorts, token])
+
+  if (!token) {
+    return (
+      <div className="flex-1 flex items-center justify-center text-neutral-500 text-sm">
+        <div className="text-center">
+          <div className="text-2xl mb-3">🗺️</div>
+          <div className="font-medium text-neutral-300 mb-1">Mapbox token not configured</div>
+          <div>Add <code className="text-emerald-400 bg-neutral-800 px-1.5 py-0.5 rounded text-xs">NEXT_PUBLIC_MAPBOX_TOKEN</code> to your environment variables</div>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="flex-1 relative">
-      <div ref={containerRef} className="absolute inset-0" />
+    <div className="flex-1 relative" style={{ minHeight: 0 }}>
+      <div ref={containerRef} style={{ position: 'absolute', inset: 0 }} />
       {/* Legend */}
       <div className="absolute bottom-8 left-4 z-10 bg-neutral-900/90 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-neutral-300 backdrop-blur-sm">
         <div className="font-semibold text-neutral-400 uppercase tracking-wider mb-2 text-[10px]">Conditions score</div>
