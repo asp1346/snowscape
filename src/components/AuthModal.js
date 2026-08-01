@@ -196,6 +196,15 @@ export default function AuthModal({ initialTab = 'signin', onClose }) {
                   Forgot password?
                 </button>
               )}
+
+              {tab === 'signup' && (
+                <p className="text-xs text-ink-faint text-center leading-relaxed">
+                  By creating an account you agree to our{' '}
+                  <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-ink-muted transition-colors">Terms of Service</a>
+                  {' '}and{' '}
+                  <a href="/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-ink-muted transition-colors">Privacy Policy</a>.
+                </p>
+              )}
             </form>
           )}
         </div>
