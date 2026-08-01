@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { conditionColor, conditionsScore } from '../lib/conditions.js'
 import ScoreBadge from './ScoreBadge.js'
 
-export default function Sidebar({ resorts, activeId }) {
+export default function Sidebar({ resorts, activeId, distances = {} }) {
   return (
     <aside className="w-56 flex-shrink-0 bg-surface border-r border-line overflow-y-auto">
       <div className="pt-5 pb-4">
@@ -21,10 +21,15 @@ export default function Sidebar({ resorts, activeId }) {
                   : 'border-transparent hover:bg-surface-2'
               }`}
             >
-              <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${conditionColor(resort.weather.snowDepth)}`} />
-              <span className={`text-sm flex-1 truncate ${isActive ? 'text-ink font-bold' : 'text-ink-muted font-medium'}`}>
-                {resort.name}
-              </span>
+              <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 mt-0.5 ${conditionColor(resort.weather.snowDepth)}`} />
+              <div className="flex-1 min-w-0">
+                <div className={`text-sm truncate ${isActive ? 'text-ink font-bold' : 'text-ink-muted font-medium'}`}>
+                  {resort.name}
+                </div>
+                {distances[resort.id] !== undefined && (
+                  <div className="text-xs text-ink-faint">{distances[resort.id]} mi</div>
+                )}
+              </div>
               <ScoreBadge score={conditionsScore(resort.weather)} />
               <span className="font-display text-xs text-ink-faint flex-shrink-0">
                 {resort.weather.snowDepth}&quot;

@@ -5,7 +5,7 @@ import RoadConditionsCard from './RoadConditionsCard.js'
 
 const days = ['Today', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed']
 
-export default function ResortDetail({ featured, resorts, liftStatus, roadConditions }) {
+export default function ResortDetail({ featured, resorts, liftStatus, roadConditions, distances = {} }) {
   const featuredScore = conditionsScore(featured.weather)
 
   return (
@@ -29,6 +29,9 @@ export default function ResortDetail({ featured, resorts, liftStatus, roadCondit
                 <span className="w-1.5 h-1.5 rounded-full bg-good-dot inline-block" />
                 Live
               </span>
+              {distances[featured.id] !== undefined && (
+                <span className="text-xs text-ink-faint">{distances[featured.id]} mi from you</span>
+              )}
             </div>
           </div>
           <div className="text-right">
@@ -138,7 +141,10 @@ export default function ResortDetail({ featured, resorts, liftStatus, roadCondit
                 <div className={`w-2 h-2 rounded-full flex-shrink-0 ${conditionColor(resort.weather.snowDepth)}`} />
                 <div className="w-44 flex-shrink-0">
                   <div className="text-sm font-bold text-ink">{resort.name}</div>
-                  <div className="text-xs text-ink-faint mt-0.5">{resort.state} · {resort.summit_elevation.toLocaleString()}ft</div>
+                  <div className="text-xs text-ink-faint mt-0.5">
+                    {resort.state} · {resort.summit_elevation.toLocaleString()}ft
+                    {distances[resort.id] !== undefined && ` · ${distances[resort.id]} mi`}
+                  </div>
                 </div>
                 <div className="flex items-baseline gap-1 w-24 flex-shrink-0">
                   <span className="font-display text-lg font-bold text-ink">{resort.weather.snowDepth}</span>
