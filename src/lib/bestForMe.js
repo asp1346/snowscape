@@ -2,13 +2,13 @@ import { scoreFromValue, scoreFromValueInverse } from './conditions.js'
 import { getLiftStatus } from './liftie.js'
 import { getRoadConditions } from './roads.js'
 
-// We don't know the visitor's actual location, so "drive time" is approximated
-// as straight-line distance from the nearest major PNW metro per state.
+// Fallback reference points used when the user has no zip code on file.
 const DRIVE_REFERENCE = {
-  OR: { lat: 45.5152, lon: -122.6784 }, // Portland, OR
-  WA: { lat: 47.6062, lon: -122.3321 } // Seattle, WA
+  OR: { lat: 45.5152, lng: -122.6784 }, // Portland, OR
+  WA: { lat: 47.6062, lng: -122.3321 }, // Seattle, WA
+  BC: { lat: 49.2827, lng: -123.1207 }, // Vancouver, BC
 }
-const MAX_DRIVE_DISTANCE_MILES = 200
+const MAX_DRIVE_DISTANCE_MILES = 250
 
 const REASONS = {
   freshSnow: 'Fresh snow is stacking up here',
@@ -28,10 +28,10 @@ function haversineMiles(lat1, lon1, lat2, lon2) {
   return earthRadiusMiles * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
-function driveTimeScore(resort) {
-  const reference = DRIVE_REFERENCE[resort.state]
+function driveTimeScore(resort, userLocation) {
+  const reference = userLocation ?? DRIVE_REFERENCE[resort.state]
   if (!reference) return null
-  const distance = haversineMiles(resort.latitude, resort.longitude, reference.lat, reference.lon)
+  const distance = haversineMiles(resort.latitude, resort.longitude, reference.lat, reference.lng)
   return scoreFromValueInverse(distance, MAX_DRIVE_DISTANCE_MILES)
 }
 
@@ -63,7 +63,7 @@ async function getRoadConditionsByResortId(resorts) {
   return byResortId
 }
 
-export async function scoreResorts(resorts, weights) {
+export async function scoreResorts(resorts, weights, userLocation = null) {
   const [liftStatuses, roadConditionsByResortId] = await Promise.all([
     Promise.all(resorts.map(resort => getLiftStatus(resort.liftie_slug))),
     getRoadConditionsByResortId(resorts)
@@ -76,7 +76,7 @@ export async function scoreResorts(resorts, weights) {
     const scores = {
       freshSnow: resort.weather.snowfall != null ? scoreFromValue(resort.weather.snowfall, 20) : null,
       snowQuality: resort.weather.temp != null ? scoreFromValueInverse(resort.weather.temp, 50) : null,
-      driveTime: driveTimeScore(resort),
+      driveTime: driveTimeScore(resort, userLocation),
       roadConditions: roadConditionScore(roadConditions)
     }
 
