@@ -8,9 +8,71 @@ const DAY_ABBR = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 function forecastDayLabel(dateStr, index) {
   if (index === 0) return 'Today'
-  // dateStr is "YYYY-MM-DD" in UTC; parse as local noon to avoid timezone edge cases
   const [y, m, d] = dateStr.split('-').map(Number)
   return DAY_ABBR[new Date(y, m - 1, d).getDay()]
+}
+
+// WMO weather interpretation codes → icon type
+function wmoToIcon(code) {
+  if (code === 0) return 'sun'
+  if (code <= 2) return 'partly-cloudy'
+  if (code <= 48) return 'cloudy'
+  if (code <= 67 || (code >= 80 && code <= 82)) return 'rain'
+  if (code <= 77 || code === 85 || code === 86) return 'snow'
+  return 'storm'
+}
+
+function WeatherIcon({ code, className = 'w-6 h-6' }) {
+  const type = wmoToIcon(code ?? 0)
+
+  if (type === 'sun') return (
+    <svg className={`${className} text-amber-400`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <circle cx="12" cy="12" r="4" />
+      <line x1="12" y1="2" x2="12" y2="5" />
+      <line x1="12" y1="19" x2="12" y2="22" />
+      <line x1="2" y1="12" x2="5" y2="12" />
+      <line x1="19" y1="12" x2="22" y2="12" />
+      <line x1="4.93" y1="4.93" x2="7.05" y2="7.05" />
+      <line x1="16.95" y1="16.95" x2="19.07" y2="19.07" />
+      <line x1="4.93" y1="19.07" x2="7.05" y2="16.95" />
+      <line x1="16.95" y1="7.05" x2="19.07" y2="4.93" />
+    </svg>
+  )
+
+  if (type === 'partly-cloudy') return (
+    <svg className={`${className} text-ink-muted`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10 9a3 3 0 1 0-4 2.83V17a2 2 0 0 0 4 0v-5.17A3 3 0 0 0 10 9z" className="text-amber-400" stroke="currentColor" />
+      <path d="M14 14.5A4.5 4.5 0 1 0 9.5 19H14a3 3 0 0 0 0-6h-.5" />
+    </svg>
+  )
+
+  if (type === 'cloudy') return (
+    <svg className={`${className} text-ink-muted`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+    </svg>
+  )
+
+  if (type === 'rain') return (
+    <svg className={`${className} text-blue-400`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+      <path d="M8 19v2" /><path d="M12 19v2" /><path d="M16 19v2" />
+    </svg>
+  )
+
+  if (type === 'snow') return (
+    <svg className={`${className} text-sky-300`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+      <path d="M8 21l4-4 4 4" /><path d="M12 17v-4" />
+    </svg>
+  )
+
+  // storm
+  return (
+    <svg className={`${className} text-amber-500`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+      <path d="M13 12l-3 5h4l-3 5" />
+    </svg>
+  )
 }
 
 export default function ResortDetail({ featured, resorts, liftStatus, roadConditions, distances = {}, savedIds = [], isLoggedIn = false }) {
@@ -88,24 +150,20 @@ export default function ResortDetail({ featured, resorts, liftStatus, roadCondit
           <div className="lg:col-span-2 bg-surface border border-line rounded-2xl overflow-hidden shadow-sm">
             <div className="flex items-center justify-between px-6 py-4 border-b border-line">
               <span className="font-display text-sm font-bold text-ink">7-day forecast</span>
-              <span className="text-xs text-ink-faint">High · Low · Snow</span>
+              <span className="text-xs text-ink-faint">High · Snow</span>
             </div>
             <div className="grid grid-cols-7 divide-x divide-line-2">
               {featured.weather.dailyDates.map((dateStr, i) => (
-                <div key={dateStr} className="text-center py-4 px-1">
-                  <div className="text-xs text-ink-muted mb-3">
+                <div key={dateStr} className="flex flex-col items-center py-4 px-1 gap-2">
+                  <div className="text-xs text-ink-muted">
                     {forecastDayLabel(dateStr, i)}
                   </div>
+                  <WeatherIcon code={featured.weather.dailyCodes[i]} className="w-5 h-5" />
                   <div className="font-display text-sm font-bold text-ink leading-none">
                     {featured.weather.dailyHigh[i] != null ? `${featured.weather.dailyHigh[i]}°` : '—'}
                   </div>
-                  <div className="font-display text-xs text-ink-faint mt-1 leading-none">
-                    {featured.weather.dailyLow[i] != null ? `${featured.weather.dailyLow[i]}°` : '—'}
-                  </div>
-                  <div className={`text-xs mt-3 font-semibold ${snowColor(featured.weather.dailySnow[i])}`}>
-                    {featured.weather.dailySnow[i] > 0
-                      ? `${featured.weather.dailySnow[i]}"`
-                      : <span className="text-ink-faint font-normal">—</span>}
+                  <div className={`text-xs font-semibold leading-none ${snowColor(featured.weather.dailySnow[i])}`}>
+                    {featured.weather.dailySnow[i] > 0 ? `${featured.weather.dailySnow[i]}"` : <span className="text-ink-faint font-normal">—</span>}
                   </div>
                 </div>
               ))}
