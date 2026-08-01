@@ -4,7 +4,14 @@ import LiftStatusCard from './LiftStatusCard.js'
 import RoadConditionsCard from './RoadConditionsCard.js'
 import BookmarkButton from './BookmarkButton.js'
 
-const days = ['Today', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed']
+const DAY_ABBR = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
+function forecastDayLabel(dateStr, index) {
+  if (index === 0) return 'Today'
+  // dateStr is "YYYY-MM-DD" in UTC; parse as local noon to avoid timezone edge cases
+  const [y, m, d] = dateStr.split('-').map(Number)
+  return DAY_ABBR[new Date(y, m - 1, d).getDay()]
+}
 
 export default function ResortDetail({ featured, resorts, liftStatus, roadConditions, distances = {}, savedIds = [], isLoggedIn = false }) {
   const featuredScore = conditionsScore(featured.weather)
@@ -81,16 +88,24 @@ export default function ResortDetail({ featured, resorts, liftStatus, roadCondit
           <div className="lg:col-span-2 bg-surface border border-line rounded-2xl overflow-hidden shadow-sm">
             <div className="flex items-center justify-between px-6 py-4 border-b border-line">
               <span className="font-display text-sm font-bold text-ink">7-day forecast</span>
-              <span className="text-xs text-ink-faint">Snowfall inches</span>
+              <span className="text-xs text-ink-faint">High · Low · Snow</span>
             </div>
             <div className="grid grid-cols-7 divide-x divide-line-2">
-              {days.map((day, i) => (
-                <div key={day} className="text-center py-5 px-2">
-                  <div className="text-xs text-ink-muted mb-3">{day}</div>
-                  <div className={`font-display text-sm font-bold ${snowColor(featured.weather.dailySnow[i])}`}>
+              {featured.weather.dailyDates.map((dateStr, i) => (
+                <div key={dateStr} className="text-center py-4 px-1">
+                  <div className="text-xs text-ink-muted mb-3">
+                    {forecastDayLabel(dateStr, i)}
+                  </div>
+                  <div className="font-display text-sm font-bold text-ink leading-none">
+                    {featured.weather.dailyHigh[i] != null ? `${featured.weather.dailyHigh[i]}°` : '—'}
+                  </div>
+                  <div className="font-display text-xs text-ink-faint mt-1 leading-none">
+                    {featured.weather.dailyLow[i] != null ? `${featured.weather.dailyLow[i]}°` : '—'}
+                  </div>
+                  <div className={`text-xs mt-3 font-semibold ${snowColor(featured.weather.dailySnow[i])}`}>
                     {featured.weather.dailySnow[i] > 0
                       ? `${featured.weather.dailySnow[i]}"`
-                      : '—'}
+                      : <span className="text-ink-faint font-normal">—</span>}
                   </div>
                 </div>
               ))}
@@ -166,12 +181,12 @@ export default function ResortDetail({ featured, resorts, liftStatus, roadCondit
                   <span className="text-xs text-ink-faint">mph wind</span>
                 </div>
                 <div className="flex gap-2 ml-auto">
-                  {resort.weather.dailySnow.slice(0, 4).map((snow, i) => (
-                    <div key={i} className="text-center w-8">
-                      <div className={`font-display text-xs font-semibold ${snowColor(snow)}`}>
-                        {snow > 0 ? `${snow}"` : '—'}
+                  {resort.weather.dailyDates.slice(0, 4).map((dateStr, i) => (
+                    <div key={dateStr} className="text-center w-8">
+                      <div className={`font-display text-xs font-semibold ${snowColor(resort.weather.dailySnow[i])}`}>
+                        {resort.weather.dailySnow[i] > 0 ? `${resort.weather.dailySnow[i]}"` : '—'}
                       </div>
-                      <div className="text-xs text-ink-faint mt-0.5">{days[i]}</div>
+                      <div className="text-xs text-ink-faint mt-0.5">{forecastDayLabel(dateStr, i)}</div>
                     </div>
                   ))}
                 </div>
