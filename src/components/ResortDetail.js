@@ -2,10 +2,11 @@ import { conditionColor, conditionsScore, snowColor } from '../lib/conditions.js
 import ScoreBadge from './ScoreBadge.js'
 import LiftStatusCard from './LiftStatusCard.js'
 import RoadConditionsCard from './RoadConditionsCard.js'
+import BookmarkButton from './BookmarkButton.js'
 
 const days = ['Today', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed']
 
-export default function ResortDetail({ featured, resorts, liftStatus, roadConditions, distances = {} }) {
+export default function ResortDetail({ featured, resorts, liftStatus, roadConditions, distances = {}, savedIds = [], isLoggedIn = false }) {
   const featuredScore = conditionsScore(featured.weather)
 
   return (
@@ -31,6 +32,12 @@ export default function ResortDetail({ featured, resorts, liftStatus, roadCondit
               </span>
               {distances[featured.id] !== undefined && (
                 <span className="text-xs text-ink-faint">{distances[featured.id]} mi from you</span>
+              )}
+              {isLoggedIn && (
+                <BookmarkButton
+                  resortId={featured.id}
+                  initialSaved={savedIds.includes(featured.id)}
+                />
               )}
             </div>
           </div>
