@@ -12,7 +12,7 @@ export default async function Home() {
   const roadConditions = await getRoadConditions(featured)
 
   return (
-    <div className="flex flex-col h-screen bg-neutral-950 overflow-hidden">
+    <div className="flex flex-col h-screen bg-page overflow-hidden">
       <Nav />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar resorts={resorts} activeId={featured.id} />

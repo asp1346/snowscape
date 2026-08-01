@@ -157,12 +157,12 @@ export async function getRoadConditions(resort) {
 
 export function roadStatusColorClasses(status) {
   if (status === 'chains') {
-    return { text: 'text-red-400', bg: 'bg-red-400/10', border: 'border-red-400/20' }
+    return { text: 'text-bad', bg: 'bg-bad-bg', border: 'border-bad-border' }
   }
   if (status === 'advisory') {
-    return { text: 'text-amber-400', bg: 'bg-amber-400/10', border: 'border-amber-400/20' }
+    return { text: 'text-low', bg: 'bg-low-bg', border: 'border-low-border' }
   }
-  return { text: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'border-emerald-400/20' }
+  return { text: 'text-good', bg: 'bg-good-bg', border: 'border-good-border' }
 }
 
 export function roadStatusLabel(status) {

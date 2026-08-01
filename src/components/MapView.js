@@ -5,9 +5,9 @@ import mapboxgl from 'mapbox-gl'
 import { conditionsScore } from '../lib/conditions.js'
 
 const SCORE_COLOR = {
-  high:   '#10b981', // emerald-500
-  mid:    '#3b82f6', // blue-500
-  low:    '#f59e0b', // amber-500
+  high: 'var(--color-good-dot)',
+  mid: 'var(--color-mid-dot)',
+  low: 'var(--color-low-dot)',
 }
 
 function markerColor(score) {
@@ -22,7 +22,7 @@ function makeMarkerEl(color) {
   outer.style.cssText = `
     width: 20px; height: 20px;
     border-radius: 50%;
-    background: ${color}22;
+    background: color-mix(in oklab, ${color} 20%, transparent);
     border: 1.5px solid ${color};
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
@@ -41,25 +41,25 @@ function popupHTML(resort, score) {
   const color = markerColor(score)
   const scoreLabel = score === null ? '—' : score
   return `
-    <div style="min-width:200px;font-family:system-ui,sans-serif;">
-      <div style="font-weight:600;font-size:14px;color:#f5f5f5;margin-bottom:2px;">${resort.name}</div>
-      <div style="font-size:11px;color:#737373;margin-bottom:10px;">${resort.state} · ${resort.summit_elevation?.toLocaleString()}ft</div>
+    <div style="min-width:200px;">
+      <div style="font-weight:700;font-size:14px;color:var(--color-ink);margin-bottom:2px;">${resort.name}</div>
+      <div style="font-size:11px;color:var(--color-ink-faint);margin-bottom:10px;">${resort.state} · ${resort.summit_elevation?.toLocaleString()}ft</div>
       <div style="display:flex;gap:14px;margin-bottom:12px;">
         <div>
           <div style="font-size:20px;font-weight:700;color:${color};line-height:1;">${scoreLabel}</div>
-          <div style="font-size:10px;color:#525252;margin-top:2px;">score</div>
+          <div style="font-size:10px;color:var(--color-ink-faint);margin-top:2px;">score</div>
         </div>
         <div>
-          <div style="font-size:20px;font-weight:600;color:#f5f5f5;line-height:1;">${resort.weather.snowDepth}"</div>
-          <div style="font-size:10px;color:#525252;margin-top:2px;">base depth</div>
+          <div style="font-size:20px;font-weight:600;color:var(--color-ink);line-height:1;">${resort.weather.snowDepth}"</div>
+          <div style="font-size:10px;color:var(--color-ink-faint);margin-top:2px;">base depth</div>
         </div>
         <div>
-          <div style="font-size:20px;font-weight:600;color:#f5f5f5;line-height:1;">${resort.weather.temp}°</div>
-          <div style="font-size:10px;color:#525252;margin-top:2px;">temp</div>
+          <div style="font-size:20px;font-weight:600;color:var(--color-ink);line-height:1;">${resort.weather.temp}°</div>
+          <div style="font-size:10px;color:var(--color-ink-faint);margin-top:2px;">temp</div>
         </div>
       </div>
       <a href="/resort/${resort.id}"
-         style="display:block;text-align:center;background:#059669;color:#fff;padding:7px 12px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:500;">
+         style="display:block;text-align:center;background:var(--color-ice);color:var(--color-navy);padding:7px 12px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:700;">
         View conditions →
       </a>
     </div>
@@ -109,11 +109,11 @@ export default function MapView({ resorts }) {
 
   if (!token) {
     return (
-      <div className="flex-1 flex items-center justify-center text-neutral-500 text-sm">
+      <div className="flex-1 flex items-center justify-center text-ink-muted text-sm">
         <div className="text-center">
           <div className="text-2xl mb-3">🗺️</div>
-          <div className="font-medium text-neutral-300 mb-1">Mapbox token not configured</div>
-          <div>Add <code className="text-emerald-400 bg-neutral-800 px-1.5 py-0.5 rounded text-xs">NEXT_PUBLIC_MAPBOX_TOKEN</code> to your environment variables</div>
+          <div className="font-medium text-ink mb-1">Mapbox token not configured</div>
+          <div>Add <code className="text-ice bg-surface-2 px-1.5 py-0.5 rounded text-xs">NEXT_PUBLIC_MAPBOX_TOKEN</code> to your environment variables</div>
         </div>
       </div>
     )
@@ -123,17 +123,17 @@ export default function MapView({ resorts }) {
     <div className="flex-1 relative" style={{ minHeight: 0 }}>
       <div ref={containerRef} style={{ position: 'absolute', inset: 0 }} />
       {/* Legend */}
-      <div className="absolute bottom-8 left-4 z-10 bg-neutral-900/90 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-neutral-300 backdrop-blur-sm">
-        <div className="font-semibold text-neutral-400 uppercase tracking-wider mb-2 text-[10px]">Conditions score</div>
+      <div className="absolute bottom-8 left-4 z-10 bg-surface/90 border border-line rounded-xl px-4 py-3 text-xs text-ink-muted backdrop-blur-sm">
+        <div className="font-display font-bold text-ink-faint uppercase tracking-wider mb-2 text-[10px]">Conditions score</div>
         {[
           { color: SCORE_COLOR.high, label: '70+', desc: 'Excellent' },
-          { color: SCORE_COLOR.mid,  label: '50–69', desc: 'Good' },
-          { color: SCORE_COLOR.low,  label: '<50', desc: 'Fair / Poor' },
+          { color: SCORE_COLOR.mid, label: '50–69', desc: 'Good' },
+          { color: SCORE_COLOR.low, label: '<50', desc: 'Fair / Poor' },
         ].map(({ color, label, desc }) => (
           <div key={label} className="flex items-center gap-2 mb-1 last:mb-0">
             <div style={{ background: color }} className="w-2.5 h-2.5 rounded-full flex-shrink-0" />
-            <span className="font-medium">{label}</span>
-            <span className="text-neutral-500">{desc}</span>
+            <span className="font-medium text-ink">{label}</span>
+            <span className="text-ink-faint">{desc}</span>
           </div>
         ))}
       </div>

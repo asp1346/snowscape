@@ -1,13 +1,13 @@
 export function conditionColor(depth) {
-  if (depth > 60) return 'bg-emerald-500'
-  if (depth > 30) return 'bg-blue-500'
-  return 'bg-amber-500'
+  if (depth > 60) return 'bg-good-dot'
+  if (depth > 30) return 'bg-mid-dot'
+  return 'bg-low-dot'
 }
 
 export function snowColor(inches) {
-  if (inches > 2) return 'text-blue-400'
-  if (inches > 0) return 'text-blue-300'
-  return 'text-neutral-600'
+  if (inches > 2) return 'text-mid'
+  if (inches > 0) return 'text-mid/70'
+  return 'text-ink-faint'
 }
 
 export function clamp(value, min = 0, max = 100) {
@@ -48,10 +48,10 @@ export function conditionsScore(weather) {
 
 export function scoreColorClasses(score) {
   if (score >= 70) {
-    return { text: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'border-emerald-400/20' }
+    return { text: 'text-good', bg: 'bg-good-bg', border: 'border-good-border' }
   }
   if (score >= 50) {
-    return { text: 'text-blue-400', bg: 'bg-blue-400/10', border: 'border-blue-400/20' }
+    return { text: 'text-mid', bg: 'bg-mid-bg', border: 'border-mid-border' }
   }
-  return { text: 'text-amber-400', bg: 'bg-amber-400/10', border: 'border-amber-400/20' }
+  return { text: 'text-low', bg: 'bg-low-bg', border: 'border-low-border' }
 }

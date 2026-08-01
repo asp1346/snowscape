@@ -36,10 +36,10 @@ export async function getLiftStatus(slug) {
 
 export function liftStatusColor(status) {
   switch (status) {
-    case 'open': return 'bg-emerald-500'
-    case 'hold': return 'bg-amber-500'
-    case 'scheduled': return 'bg-blue-500'
-    default: return 'bg-neutral-600'
+    case 'open': return 'bg-good-dot'
+    case 'hold': return 'bg-low-dot'
+    case 'scheduled': return 'bg-mid-dot'
+    default: return 'bg-flat-dot'
   }
 }
 

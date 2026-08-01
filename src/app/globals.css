@@ -1,34 +1,177 @@
 @import "tailwindcss";
 @import "mapbox-gl/dist/mapbox-gl.css";
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  /* brand — constant across themes */
+  --navy: oklch(0.22 0.035 255);
+  --navy-soft: oklch(0.28 0.03 255);
+  --ice: oklch(0.72 0.14 215);
+  --coral: oklch(0.7 0.19 35);
+
+  /* surfaces — light */
+  --page: oklch(0.94 0.008 230);
+  --surface: oklch(1 0 0);
+  --surface-2: oklch(0.95 0.008 230);
+  --line: oklch(0.87 0.012 230);
+  --line-2: oklch(0.92 0.008 230);
+
+  /* text — light */
+  --ink: oklch(0.18 0.02 250);
+  --ink-muted: oklch(0.5 0.02 250);
+  --ink-faint: oklch(0.68 0.015 250);
+
+  /* status — light */
+  --good: oklch(0.42 0.13 155);
+  --good-bg: oklch(0.93 0.05 155);
+  --good-border: oklch(0.8 0.09 155);
+  --good-dot: oklch(0.65 0.17 155);
+
+  --mid: oklch(0.45 0.13 235);
+  --mid-bg: oklch(0.93 0.045 235);
+  --mid-border: oklch(0.8 0.08 235);
+  --mid-dot: oklch(0.62 0.15 235);
+
+  --low: oklch(0.45 0.13 75);
+  --low-bg: oklch(0.93 0.06 80);
+  --low-border: oklch(0.82 0.09 78);
+  --low-dot: oklch(0.72 0.15 75);
+
+  --bad: oklch(0.48 0.18 25);
+  --bad-bg: oklch(0.93 0.06 25);
+  --bad-border: oklch(0.82 0.1 25);
+  --bad-dot: oklch(0.62 0.19 25);
+
+  --flat: oklch(0.5 0.02 250);
+  --flat-bg: oklch(0.92 0.008 250);
+  --flat-border: oklch(0.82 0.012 250);
+  --flat-dot: oklch(0.7 0.01 250);
+}
+
+:root[data-theme="dark"] {
+  --page: oklch(0.16 0.016 255);
+  --surface: oklch(0.21 0.02 255);
+  --surface-2: oklch(0.26 0.022 255);
+  --line: oklch(0.31 0.02 255);
+  --line-2: oklch(0.27 0.02 255);
+
+  --ink: oklch(0.95 0.008 250);
+  --ink-muted: oklch(0.68 0.015 250);
+  --ink-faint: oklch(0.52 0.015 250);
+
+  --good: oklch(0.78 0.14 155);
+  --good-bg: oklch(0.32 0.06 155);
+  --good-border: oklch(0.42 0.08 155);
+  --good-dot: oklch(0.72 0.17 155);
+
+  --mid: oklch(0.78 0.11 235);
+  --mid-bg: oklch(0.32 0.055 235);
+  --mid-border: oklch(0.42 0.075 235);
+  --mid-dot: oklch(0.68 0.14 235);
+
+  --low: oklch(0.82 0.12 78);
+  --low-bg: oklch(0.34 0.065 80);
+  --low-border: oklch(0.44 0.085 80);
+  --low-dot: oklch(0.76 0.15 75);
+
+  --bad: oklch(0.78 0.16 25);
+  --bad-bg: oklch(0.34 0.07 25);
+  --bad-border: oklch(0.44 0.095 25);
+  --bad-dot: oklch(0.68 0.19 25);
+
+  --flat: oklch(0.65 0.012 250);
+  --flat-bg: oklch(0.28 0.012 250);
+  --flat-border: oklch(0.38 0.014 250);
+  --flat-dot: oklch(0.45 0.012 250);
+}
+
+@theme inline {
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+
+  --color-navy: var(--navy);
+  --color-navy-soft: var(--navy-soft);
+  --color-ice: var(--ice);
+  --color-coral: var(--coral);
+
+  --color-good: var(--good);
+  --color-good-bg: var(--good-bg);
+  --color-good-border: var(--good-border);
+  --color-good-dot: var(--good-dot);
+
+  --color-mid: var(--mid);
+  --color-mid-bg: var(--mid-bg);
+  --color-mid-border: var(--mid-border);
+  --color-mid-dot: var(--mid-dot);
+
+  --color-low: var(--low);
+  --color-low-bg: var(--low-bg);
+  --color-low-border: var(--low-border);
+  --color-low-dot: var(--low-dot);
+
+  --color-bad: var(--bad);
+  --color-bad-bg: var(--bad-bg);
+  --color-bad-border: var(--bad-border);
+  --color-bad-dot: var(--bad-dot);
+
+  --color-flat: var(--flat);
+  --color-flat-bg: var(--flat-bg);
+  --color-flat-border: var(--flat-border);
+  --color-flat-dot: var(--flat-dot);
+
+  --font-display: var(--font-space-grotesk);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 }
 
 body {
-  background: #0f0f0f;
-  color: #f0f0f0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--color-page);
+  color: var(--color-ink);
+  font-family: var(--font-manrope), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-/* Mapbox popup dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-line);
+  border-radius: 4px;
+}
+
+/* Mapbox popup */
 .mapboxgl-popup-content {
-  background: #171717 !important;
-  border: 1px solid #262626 !important;
+  background: var(--color-surface) !important;
+  border: 1px solid var(--color-line) !important;
   border-radius: 12px !important;
   padding: 14px 16px !important;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.5) !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.25) !important;
 }
 
 .mapboxgl-popup-tip {
-  border-top-color: #171717 !important;
-  border-bottom-color: #171717 !important;
+  border-top-color: var(--color-surface) !important;
+  border-bottom-color: var(--color-surface) !important;
 }
 
 .mapboxgl-popup-close-button {
-  color: #525252 !important;
+  color: var(--color-ink-faint) !important;
   font-size: 16px !important;
   padding: 4px 8px !important;
   line-height: 1 !important;
@@ -37,6 +180,6 @@ body {
 }
 
 .mapboxgl-popup-close-button:hover {
-  color: #f5f5f5 !important;
+  color: var(--color-ink) !important;
   background: transparent !important;
 }

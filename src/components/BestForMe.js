@@ -58,7 +58,7 @@ export default function BestForMe() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="ml-auto text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2 rounded-full transition-colors whitespace-nowrap"
+        className="font-display text-sm font-bold bg-coral hover:brightness-95 text-white px-5 py-2 rounded-lg transition-[filter] whitespace-nowrap"
       >
         Best for me ↗
       </button>
@@ -71,14 +71,14 @@ export default function BestForMe() {
             role="dialog"
             aria-modal="true"
             aria-label="Best for me resort scorer"
-            className="relative bg-neutral-950 border border-neutral-800 rounded-2xl w-full max-w-3xl max-h-[85vh] overflow-y-auto"
+            className="relative bg-surface border border-line rounded-2xl shadow-lg w-full max-w-3xl max-h-[85vh] overflow-y-auto"
           >
-            <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800 sticky top-0 bg-neutral-950">
-              <h2 className="text-lg font-semibold text-white">Best for me</h2>
+            <div className="flex items-center justify-between px-6 py-4 border-b border-line sticky top-0 bg-surface">
+              <h2 className="font-display text-lg font-bold text-ink">Best for me</h2>
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Close"
-                className="text-neutral-500 hover:text-white transition-colors text-xl leading-none"
+                className="text-ink-faint hover:text-ink transition-colors text-xl leading-none"
               >
                 ×
               </button>
@@ -86,7 +86,7 @@ export default function BestForMe() {
 
             <div className="p-6">
               {/* Riding style presets */}
-              <p className="text-xs font-semibold tracking-widest text-neutral-600 uppercase mb-3">
+              <p className="font-display text-[11px] font-bold tracking-widest text-ink-faint uppercase mb-3">
                 Riding style
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-6">
@@ -96,8 +96,8 @@ export default function BestForMe() {
                     onClick={() => applyPreset(preset)}
                     className={`text-sm px-3 py-2.5 rounded-xl border transition-colors ${
                       activePreset === preset.name
-                        ? 'bg-emerald-600/20 border-emerald-500 text-emerald-400 font-medium'
-                        : 'bg-neutral-900 border-neutral-800 text-neutral-300 hover:border-neutral-700'
+                        ? 'bg-ice/15 border-ice text-navy dark:text-ice font-semibold'
+                        : 'bg-surface-2 border-line text-ink-muted hover:border-ice/50'
                     }`}
                   >
                     {preset.name}
@@ -106,20 +106,20 @@ export default function BestForMe() {
               </div>
 
               {/* Weighted sliders */}
-              <p className="text-xs font-semibold tracking-widest text-neutral-600 uppercase mb-3">
+              <p className="font-display text-[11px] font-bold tracking-widest text-ink-faint uppercase mb-3">
                 What matters to you
               </p>
-              <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-5 flex flex-col gap-5 mb-6">
+              <div className="bg-surface-2 border border-line rounded-2xl p-5 flex flex-col gap-5 mb-6">
                 {CRITERIA.map(criterion => (
                   <div key={criterion.key}>
                     <div className="flex justify-between items-baseline mb-2">
-                      <span className="text-sm text-neutral-300">
+                      <span className="text-sm text-ink-muted">
                         {criterion.label}
                         {!criterion.hasData && (
-                          <span className="text-xs text-neutral-600 ml-2">(no live data yet)</span>
+                          <span className="text-xs text-ink-faint ml-2">(no live data yet)</span>
                         )}
                       </span>
-                      <span className="text-sm font-semibold text-white">{weights[criterion.key]}</span>
+                      <span className="font-display text-sm font-bold text-ink">{weights[criterion.key]}</span>
                     </div>
                     <input
                       type="range"
@@ -128,7 +128,7 @@ export default function BestForMe() {
                       step="1"
                       value={weights[criterion.key]}
                       onChange={e => updateWeight(criterion.key, Number(e.target.value))}
-                      className={`w-full accent-emerald-600 ${!criterion.hasData ? 'opacity-50' : ''}`}
+                      className={`w-full accent-coral ${!criterion.hasData ? 'opacity-50' : ''}`}
                     />
                   </div>
                 ))}
@@ -137,13 +137,13 @@ export default function BestForMe() {
               <button
                 onClick={handleFindBest}
                 disabled={loading}
-                className="w-full text-sm font-medium bg-emerald-600 hover:bg-emerald-500 disabled:bg-neutral-800 disabled:text-neutral-500 text-white px-5 py-2.5 rounded-xl transition-colors mb-6"
+                className="w-full font-display text-sm font-bold bg-ice hover:brightness-95 disabled:bg-surface-2 disabled:text-ink-faint text-navy px-5 py-2.5 rounded-xl transition-[filter] mb-6"
               >
                 {loading ? 'Scoring resorts…' : 'Find my best resort'}
               </button>
 
               {error && (
-                <div className="text-sm text-amber-400 bg-amber-400/10 border border-amber-400/20 rounded-xl px-4 py-3 mb-6">
+                <div className="text-sm text-low bg-low-bg border border-low-border rounded-xl px-4 py-3 mb-6">
                   {error}
                 </div>
               )}
@@ -153,34 +153,34 @@ export default function BestForMe() {
                   {results.map(result => (
                     <div
                       key={result.id}
-                      className="bg-neutral-900 border border-neutral-800 rounded-2xl p-4 flex items-center gap-4"
+                      className="bg-surface-2 border border-line rounded-2xl p-4 flex items-center gap-4"
                     >
-                      <div className="w-7 h-7 rounded-full bg-emerald-600/20 border border-emerald-600/40 text-emerald-400 text-sm font-semibold flex items-center justify-center flex-shrink-0">
+                      <div className="font-display w-7 h-7 rounded-full bg-ice/15 border border-ice/40 text-navy dark:text-ice text-sm font-bold flex items-center justify-center flex-shrink-0">
                         {result.rank}
                       </div>
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-white truncate">{result.name}</span>
+                          <span className="text-sm font-semibold text-ink truncate">{result.name}</span>
                           <ScoreBadge score={result.compositeScore} />
                         </div>
-                        <div className="text-xs text-neutral-500 mt-0.5">{result.reason}</div>
+                        <div className="text-xs text-ink-faint mt-0.5">{result.reason}</div>
                       </div>
 
                       <div className="flex gap-4 flex-shrink-0 text-right">
                         <div>
-                          <div className="text-sm font-semibold text-white">{result.snowDepth}&quot;</div>
-                          <div className="text-xs text-neutral-600">base</div>
+                          <div className="font-display text-sm font-bold text-ink">{result.snowDepth}&quot;</div>
+                          <div className="text-xs text-ink-faint">base</div>
                         </div>
                         <div>
-                          <div className="text-sm font-semibold text-white">{result.temp}°</div>
-                          <div className="text-xs text-neutral-600">temp</div>
+                          <div className="font-display text-sm font-bold text-ink">{result.temp}°</div>
+                          <div className="text-xs text-ink-faint">temp</div>
                         </div>
                         <div>
-                          <div className="text-sm font-semibold text-white">
+                          <div className="font-display text-sm font-bold text-ink">
                             {result.openLifts != null ? `${result.openLifts}/${result.totalLifts}` : '—'}
                           </div>
-                          <div className="text-xs text-neutral-600">lifts</div>
+                          <div className="text-xs text-ink-faint">lifts</div>
                         </div>
                       </div>
                     </div>

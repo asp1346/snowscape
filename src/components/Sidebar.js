@@ -4,9 +4,9 @@ import ScoreBadge from './ScoreBadge.js'
 
 export default function Sidebar({ resorts, activeId }) {
   return (
-    <aside className="w-56 flex-shrink-0 bg-neutral-900 border-r border-neutral-800 overflow-y-auto">
+    <aside className="w-56 flex-shrink-0 bg-surface border-r border-line overflow-y-auto">
       <div className="pt-5 pb-4">
-        <p className="text-xs font-semibold tracking-widest text-neutral-600 uppercase px-5 mb-3">
+        <p className="font-display text-[11px] font-bold tracking-widest text-ink-faint uppercase px-5 mb-4">
           Resorts
         </p>
         {resorts.map((resort) => {
@@ -15,19 +15,19 @@ export default function Sidebar({ resorts, activeId }) {
             <Link
               key={resort.id}
               href={`/resort/${resort.id}`}
-              className={`flex items-center gap-3 px-5 py-2.5 transition-colors ${
+              className={`flex items-center gap-3 px-5 py-3 border-l-[3px] transition-colors ${
                 isActive
-                  ? 'bg-neutral-800 border-r-2 border-emerald-500'
-                  : 'hover:bg-neutral-800/50'
+                  ? 'border-ice bg-ice/10'
+                  : 'border-transparent hover:bg-surface-2'
               }`}
             >
               <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${conditionColor(resort.weather.snowDepth)}`} />
-              <span className={`text-sm flex-1 truncate ${isActive ? 'text-white font-medium' : 'text-neutral-400'}`}>
+              <span className={`text-sm flex-1 truncate ${isActive ? 'text-ink font-bold' : 'text-ink-muted font-medium'}`}>
                 {resort.name}
               </span>
               <ScoreBadge score={conditionsScore(resort.weather)} />
-              <span className="text-xs text-neutral-500 flex-shrink-0">
-                {resort.weather.snowDepth}"
+              <span className="font-display text-xs text-ink-faint flex-shrink-0">
+                {resort.weather.snowDepth}&quot;
               </span>
             </Link>
           )

@@ -6,7 +6,7 @@ export default async function MapPage() {
   const resorts = await getResortsWithWeather()
 
   return (
-    <div className="flex flex-col h-screen bg-neutral-950 overflow-hidden">
+    <div className="flex flex-col h-screen bg-page overflow-hidden">
       <Nav />
       <MapView resorts={resorts} />
     </div>
