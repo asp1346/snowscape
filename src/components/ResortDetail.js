@@ -121,7 +121,7 @@ export default function ResortDetail({ featured, resorts, liftStatus, roadCondit
         {/* Stats grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
           {[
-            { label: 'Snow depth', value: featured.weather.snowDepth, unit: '"', sub: 'at summit' },
+            { label: 'Snow depth', value: featured.weather.snowDepth, unit: '"', sub: featured.weather.modelElevation ? `at ${featured.weather.modelElevation.toLocaleString()}ft` : 'weather model' },
             { label: 'New snowfall', value: featured.weather.snowfall, unit: '"', sub: 'last reading' },
             { label: 'Wind speed', value: featured.weather.windSpeed, unit: ' mph', sub: 'at summit' },
           ].map(stat => (

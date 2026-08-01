@@ -24,6 +24,7 @@ export async function getWeatherForResort(lat, lon) {
     snowDepth: Math.round(data.current.snow_depth * 39.37),
     windSpeed: Math.round(data.current.wind_speed_10m),
     weatherCode: data.current.weather_code,
+    modelElevation: data.elevation != null ? Math.round(data.elevation * 3.281) : null,
     dailySnow: data.daily.snowfall_sum.map(v => Math.round(v * 10) / 10),
     dailyHigh: data.daily.temperature_2m_max.map(v => Math.round(v)),
     dailyCodes: data.daily.weather_code,
