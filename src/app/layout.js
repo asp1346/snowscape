@@ -1,5 +1,6 @@
 import { Space_Grotesk, Manrope } from 'next/font/google'
 import './globals.css'
+import { Analytics } from '@vercel/analytics/next'
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -34,7 +35,10 @@ export default function RootLayout({ children }) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className={`${spaceGrotesk.variable} ${manrope.variable}`}>{children}</body>
+      <body className={`${spaceGrotesk.variable} ${manrope.variable}`}>
+        {children}
+        <Analytics />
+      </body>
     </html>
   )
 }
