@@ -12,6 +12,7 @@ import { createClient } from '../lib/supabase-browser.js'
 const NAV_LINKS = [
   { label: 'Conditions', href: '/' },
   { label: 'Map', href: '/map' },
+  { label: 'Forecast', href: '/forecast' },
 ]
 
 export default function Nav() {
@@ -178,15 +179,12 @@ export default function Nav() {
               {label}
             </Link>
           ))}
-          {['Forecast', 'Alerts'].map(label => (
-            <button
-              key={label}
-              disabled
-              className="text-sm px-3.5 py-2 rounded-lg text-white/25 cursor-not-allowed"
-            >
-              {label}
-            </button>
-          ))}
+          <button
+            disabled
+            className="text-sm px-3.5 py-2 rounded-lg text-white/25 cursor-not-allowed"
+          >
+            Alerts
+          </button>
         </div>
 
         <div className="ml-auto flex items-center gap-3">

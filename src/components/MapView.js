@@ -1,8 +1,32 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import { conditionsScore } from '../lib/conditions.js'
+
+const RADAR_SOURCE = 'rainviewer-radar'
+const RADAR_LAYER = 'rainviewer-radar-layer'
+
+async function addRadarLayer(map) {
+  if (map.getSource(RADAR_SOURCE)) return
+  try {
+    const res = await fetch('https://api.rainviewer.com/public/weather-maps.json')
+    const data = await res.json()
+    const frames = data.radar?.past
+    if (!frames?.length) return
+    const latest = frames[frames.length - 1]
+    const tileUrl = `https://tilecache.rainviewer.com${latest.path}/256/{z}/{x}/{y}/6/1_1.png`
+    map.addSource(RADAR_SOURCE, { type: 'raster', tiles: [tileUrl], tileSize: 256 })
+    map.addLayer({ id: RADAR_LAYER, type: 'raster', source: RADAR_SOURCE, paint: { 'raster-opacity': 0.65 } })
+  } catch (err) {
+    console.error('Failed to load radar:', err)
+  }
+}
+
+function removeRadarLayer(map) {
+  if (map.getLayer(RADAR_LAYER)) map.removeLayer(RADAR_LAYER)
+  if (map.getSource(RADAR_SOURCE)) map.removeSource(RADAR_SOURCE)
+}
 
 const SCORE_COLOR = {
   high: 'var(--color-good-dot)',
@@ -70,6 +94,8 @@ export default function MapView({ resorts }) {
   const containerRef = useRef(null)
   const mapRef = useRef(null)
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+  const [radarOn, setRadarOn] = useState(false)
+  const mapReadyRef = useRef(false)
 
   useEffect(() => {
     if (!token || !containerRef.current) return
@@ -87,6 +113,7 @@ export default function MapView({ resorts }) {
     map.addControl(new mapboxgl.NavigationControl(), 'top-right')
 
     map.on('load', () => {
+      mapReadyRef.current = true
       resorts.forEach(resort => {
         const score = conditionsScore(resort.weather)
         const color = markerColor(score)
@@ -104,8 +131,19 @@ export default function MapView({ resorts }) {
       })
     })
 
-    return () => map.remove()
+    return () => { mapReadyRef.current = false; map.remove() }
   }, [resorts, token])
+
+  // Toggle radar layer when radarOn changes
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map || !mapReadyRef.current) return
+    if (radarOn) {
+      addRadarLayer(map)
+    } else {
+      removeRadarLayer(map)
+    }
+  }, [radarOn])
 
   if (!token) {
     return (
@@ -122,6 +160,24 @@ export default function MapView({ resorts }) {
   return (
     <div className="flex-1 relative" style={{ minHeight: 0 }}>
       <div ref={containerRef} style={{ position: 'absolute', inset: 0 }} />
+      {/* Radar toggle */}
+      <div className="absolute top-4 left-4 z-10">
+        <button
+          onClick={() => setRadarOn(r => !r)}
+          className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold border backdrop-blur-sm transition-colors ${
+            radarOn
+              ? 'bg-sky-500/20 border-sky-400/60 text-sky-300'
+              : 'bg-surface/90 border-line text-ink-muted hover:text-ink'
+          }`}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+            <circle cx="12" cy="12" r="4" />
+          </svg>
+          Snow radar {radarOn ? 'on' : 'off'}
+        </button>
+      </div>
+
       {/* Legend */}
       <div className="absolute bottom-8 left-4 z-10 bg-surface/90 border border-line rounded-xl px-4 py-3 text-xs text-ink-muted backdrop-blur-sm">
         <div className="font-display font-bold text-ink-faint uppercase tracking-wider mb-2 text-[10px]">Conditions score</div>
