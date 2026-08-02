@@ -22,7 +22,7 @@ export default async function Home() {
     <div className="flex flex-col h-screen bg-page overflow-hidden">
       <Nav />
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar resorts={resorts} activeId={featured.id} distances={distances} savedIds={savedIds} isLoggedIn={isLoggedIn} />
+        <Sidebar resorts={resorts} activeId={featured.id} distances={distances} savedIds={savedIds} isLoggedIn={isLoggedIn} className="hidden md:block" />
         <ResortDetail
           featured={featured}
           resorts={resorts}

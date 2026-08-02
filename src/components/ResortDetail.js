@@ -10,10 +10,10 @@ export default function ResortDetail({ featured, resorts, liftStatus, roadCondit
 
   return (
     <main className="flex-1 overflow-y-auto bg-page">
-      <div className="p-8 max-w-6xl">
+      <div className="p-4 md:p-8 max-w-6xl">
 
         {/* Resort header */}
-        <div className="flex items-start justify-between mb-8">
+        <div className="flex items-start justify-between flex-wrap gap-4 mb-8">
           <div>
             <div className="flex items-center gap-3">
               <h1 className="font-display text-3xl font-bold text-ink tracking-tight">
@@ -82,7 +82,8 @@ export default function ResortDetail({ featured, resorts, liftStatus, roadCondit
               <span className="font-display text-sm font-bold text-ink">7-day forecast</span>
               <span className="text-xs text-ink-faint">High · Snow</span>
             </div>
-            <div className="grid grid-cols-7 divide-x divide-line-2">
+            <div className="overflow-x-auto">
+            <div className="grid grid-cols-7 divide-x divide-line-2 min-w-[400px]">
               {featured.weather.dailyDates.map((dateStr, i) => (
                 <div key={dateStr} className="flex flex-col items-center py-4 px-1 gap-2">
                   <div className="text-xs text-ink-muted">
@@ -97,6 +98,7 @@ export default function ResortDetail({ featured, resorts, liftStatus, roadCondit
                   </div>
                 </div>
               ))}
+            </div>
             </div>
           </div>
 
@@ -145,7 +147,8 @@ export default function ResortDetail({ featured, resorts, liftStatus, roadCondit
           <div className="px-6 py-4 border-b border-line">
             <span className="font-display text-sm font-bold text-ink">All resorts</span>
           </div>
-          <div className="divide-y divide-line-2">
+          <div className="overflow-x-auto">
+          <div className="divide-y divide-line-2 min-w-[580px]">
             {resorts.map(resort => (
               <div key={resort.id} className="flex items-center gap-6 px-6 py-4 hover:bg-surface-2 cursor-pointer transition-colors">
                 <div className={`w-2 h-2 rounded-full flex-shrink-0 ${conditionColor(resort.weather.snowDepth)}`} />
@@ -180,6 +183,7 @@ export default function ResortDetail({ featured, resorts, liftStatus, roadCondit
                 </div>
               </div>
             ))}
+          </div>
           </div>
         </div>
 

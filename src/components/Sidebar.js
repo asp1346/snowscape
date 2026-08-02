@@ -6,7 +6,7 @@ import { conditionColor, conditionsScore } from '../lib/conditions.js'
 import ScoreBadge from './ScoreBadge.js'
 import BookmarkButton from './BookmarkButton.js'
 
-export default function Sidebar({ resorts, activeId, distances = {}, savedIds = [], isLoggedIn = false }) {
+export default function Sidebar({ resorts, activeId, distances = {}, savedIds = [], isLoggedIn = false, className = '' }) {
   const [filter, setFilter] = useState('all')
   const [savedSet, setSavedSet] = useState(() => new Set(savedIds))
 
@@ -23,7 +23,7 @@ export default function Sidebar({ resorts, activeId, distances = {}, savedIds = 
     : resorts
 
   return (
-    <aside className="w-56 flex-shrink-0 bg-surface border-r border-line overflow-y-auto">
+    <aside className={`w-56 flex-shrink-0 bg-surface border-r border-line overflow-y-auto ${className}`}>
       <div className="pt-5 pb-4">
         {isLoggedIn ? (
           <div className="flex items-center gap-1 px-5 mb-4">

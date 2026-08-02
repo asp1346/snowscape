@@ -22,7 +22,7 @@ export default async function ForecastPage() {
     <div className="flex flex-col h-screen bg-page overflow-hidden">
       <Nav />
       <main className="flex-1 overflow-auto">
-        <div className="p-8">
+        <div className="p-4 md:p-8">
 
           <div className="mb-6">
             <h1 className="font-display text-2xl font-bold text-ink tracking-tight">7-Day Forecast</h1>
