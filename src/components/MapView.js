@@ -160,8 +160,8 @@ export default function MapView({ resorts }) {
   return (
     <div className="flex-1 relative" style={{ minHeight: 0 }}>
       <div ref={containerRef} style={{ position: 'absolute', inset: 0 }} />
-      {/* Radar toggle */}
-      <div className="absolute top-4 left-4 z-10">
+      {/* Radar toggle + legend */}
+      <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
         <button
           onClick={() => setRadarOn(r => !r)}
           className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold border backdrop-blur-sm transition-colors ${
@@ -176,6 +176,32 @@ export default function MapView({ resorts }) {
           </svg>
           Snow radar {radarOn ? 'on' : 'off'}
         </button>
+
+        {radarOn && (
+          <div className="bg-surface/90 border border-line rounded-xl px-3 py-3 backdrop-blur-sm">
+            <div className="font-display font-bold text-ink-faint uppercase tracking-wider mb-2 text-[10px]">
+              Precipitation
+            </div>
+            {[
+              { color: '#00d4d4', label: 'Light', sub: 'flurries / drizzle' },
+              { color: '#00d400', label: 'Moderate', sub: 'steady snow / rain' },
+              { color: '#ffd000', label: 'Heavy', sub: 'accumulating fast' },
+              { color: '#ff6400', label: 'Very heavy', sub: 'significant event' },
+              { color: '#cc0000', label: 'Intense', sub: 'storm conditions' },
+            ].map(({ color, label, sub }) => (
+              <div key={label} className="flex items-center gap-2 mb-1.5 last:mb-0">
+                <div className="w-3 h-3 rounded-sm flex-shrink-0" style={{ background: color }} />
+                <div>
+                  <span className="text-xs font-medium text-ink">{label}</span>
+                  <span className="text-[10px] text-ink-faint ml-1.5">{sub}</span>
+                </div>
+              </div>
+            ))}
+            <div className="text-[10px] text-ink-faint mt-2 pt-2 border-t border-line-2">
+              via RainViewer · live radar
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Legend */}
