@@ -23,6 +23,7 @@ export default function Nav() {
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
+  const [bestForMeOpen, setBestForMeOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [resortList, setResortList] = useState([])
   const [searchOpen, setSearchOpen] = useState(false)
@@ -104,7 +105,7 @@ export default function Nav() {
 
   function toggleMobileSearch() {
     setMobileSearchOpen(o => {
-      if (!o) setMobileMenuOpen(false) // close menu when opening search
+      if (!o) setMobileMenuOpen(false)
       return !o
     })
     setSearchOpen(false)
@@ -113,7 +114,7 @@ export default function Nav() {
 
   function toggleMobileMenu() {
     setMobileMenuOpen(o => {
-      if (!o) setMobileSearchOpen(false) // close search when opening menu
+      if (!o) setMobileSearchOpen(false)
       return !o
     })
   }
@@ -133,7 +134,6 @@ export default function Nav() {
 
   const initials = user?.email?.[0]?.toUpperCase() ?? '?'
 
-  // Shared search result dropdown
   const SearchResults = () => searchOpen && results.length > 0 ? (
     <div className="absolute left-0 right-0 top-full mt-1.5 bg-surface border border-line rounded-xl shadow-xl overflow-hidden z-50">
       {results.map((resort, i) => (
@@ -274,7 +274,6 @@ export default function Nav() {
 
           {/* Mobile-only: search icon + theme + avatar + hamburger */}
           <div className="md:hidden ml-auto flex items-center gap-0.5 flex-shrink-0">
-            {/* Search toggle */}
             <button
               onClick={toggleMobileSearch}
               className={`p-2 transition-colors ${mobileSearchOpen ? 'text-white' : 'text-white/60 hover:text-white'}`}
@@ -292,7 +291,6 @@ export default function Nav() {
             </button>
             <ThemeToggle />
             {user && <UserMenu />}
-            {/* Hamburger */}
             <button
               onClick={toggleMobileMenu}
               className={`p-2 transition-colors ${mobileMenuOpen ? 'text-white' : 'text-white/60 hover:text-white'}`}
@@ -343,54 +341,107 @@ export default function Nav() {
           </div>
         )}
 
-        {/* Mobile menu — page links + actions */}
+        {/* Mobile menu — 2b layout */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-white/10 pb-3">
-            <div className="px-4 pt-3 flex flex-col gap-0.5">
-              {NAV_LINKS.map(({ label, href }) => (
-                <Link
-                  key={label}
-                  href={href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    isActive(href)
-                      ? 'text-white bg-white/10 font-semibold'
-                      : 'text-white/70 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  {label}
-                </Link>
-              ))}
-              <button
-                disabled
-                className="flex items-center px-3 py-2.5 rounded-lg text-sm text-white/30 text-left cursor-not-allowed"
-              >
-                Alerts
-              </button>
-            </div>
+          <div className="md:hidden border-t border-white/10 pb-4">
 
-            <div className="px-4 mt-2 pt-3 border-t border-white/10 flex items-center gap-3 flex-wrap">
-              <BestForMe />
-              {!user && (
-                <>
+            {/* 1. Auth row */}
+            <div className="px-4 pt-4 pb-3">
+              {user ? (
+                <div className="flex items-center justify-between bg-white/5 rounded-xl px-4 py-3">
+                  <span className="text-sm text-white/70 truncate">{user.email}</span>
+                  <button
+                    onClick={signOut}
+                    className="text-sm text-white/50 hover:text-white ml-4 transition-colors flex-shrink-0"
+                  >
+                    Sign out
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-2.5">
                   <button
                     onClick={() => { setMobileMenuOpen(false); setAuthModal('signin') }}
-                    className="text-sm text-white/70 hover:text-white px-3 py-2 transition-colors"
+                    className="flex-1 text-sm font-bold text-white border border-white/20 rounded-xl py-3 text-center transition-colors hover:bg-white/5"
                   >
                     Sign in
                   </button>
                   <button
                     onClick={() => { setMobileMenuOpen(false); setAuthModal('signup') }}
-                    className="font-display font-bold text-sm text-navy bg-ice hover:brightness-95 px-5 py-2 rounded-lg transition-[filter]"
+                    className="flex-1 text-sm font-bold text-navy bg-ice rounded-xl py-3 text-center hover:brightness-95 transition-[filter]"
                   >
                     Sign up free
                   </button>
-                </>
+                </div>
               )}
+            </div>
+
+            {/* 2. Best for me featured card */}
+            <div className="px-4 pb-3">
+              <button
+                onClick={() => { setMobileMenuOpen(false); setBestForMeOpen(true) }}
+                className="w-full flex items-center gap-3 p-3.5 rounded-xl text-left transition-opacity hover:opacity-90"
+                style={{
+                  background: 'linear-gradient(135deg, oklch(0.72 0.14 215 / 20%), oklch(0.7 0.19 35 / 10%))',
+                  border: '1px solid oklch(0.72 0.14 215 / 30%)',
+                }}
+              >
+                {/* Icon tile */}
+                <div className="w-9 h-9 rounded-[9px] bg-ice flex items-center justify-center flex-shrink-0">
+                  <svg className="w-4.5 h-4.5 text-navy" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                    <line x1="12" y1="2" x2="12" y2="22" />
+                    <line x1="2" y1="12" x2="22" y2="12" />
+                    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                    <line x1="19.07" y1="4.93" x2="4.93" y2="19.07" />
+                    <circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-bold text-white">Best for me</div>
+                  <div className="text-xs text-white/60 mt-0.5">Your personalized top picks</div>
+                </div>
+                <svg className="w-4 h-4 text-ice flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6" />
+                </svg>
+              </button>
+            </div>
+
+            {/* 3. Divider */}
+            <div className="h-px bg-white/10 mx-5 mb-2" />
+
+            {/* 4. Nav links */}
+            <div className="px-3 pt-1 flex flex-col gap-0.5">
+              {NAV_LINKS.map(({ label, href }) => {
+                const active = isActive(href)
+                return (
+                  <Link
+                    key={label}
+                    href={href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center gap-3.5 px-3 py-3 rounded-xl text-sm transition-colors ${
+                      active
+                        ? 'bg-navy-soft font-bold text-white'
+                        : 'font-medium text-white/70 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${active ? 'bg-ice' : 'opacity-0'}`} />
+                    {label}
+                  </Link>
+                )
+              })}
+              <button
+                disabled
+                className="flex items-center gap-3.5 px-3 py-3 rounded-xl text-sm text-white/25 text-left cursor-not-allowed"
+              >
+                <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 opacity-0" />
+                Alerts
+              </button>
             </div>
           </div>
         )}
       </div>
+
+      {/* Best for me modal — controlled from nav, shared between desktop button and mobile card */}
+      <BestForMe open={bestForMeOpen} onClose={() => setBestForMeOpen(false)} />
 
       {authModal && (
         <AuthModal

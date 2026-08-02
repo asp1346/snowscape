@@ -5,22 +5,31 @@ import { findBestResorts } from '../app/actions.js'
 import { CRITERIA, DEFAULT_WEIGHTS, PRESETS } from '../lib/riderPresets.js'
 import ScoreBadge from './ScoreBadge.js'
 
-export default function BestForMe() {
-  const [open, setOpen] = useState(false)
+// When open + onClose are provided, the component runs in controlled mode
+// and skips rendering its own trigger button.
+export default function BestForMe({ open: controlledOpen, onClose } = {}) {
+  const controlled = controlledOpen !== undefined
+  const [internalOpen, setInternalOpen] = useState(false)
+  const isOpen = controlled ? controlledOpen : internalOpen
   const [weights, setWeights] = useState(DEFAULT_WEIGHTS)
   const [activePreset, setActivePreset] = useState(null)
   const [results, setResults] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
+  function close() {
+    if (controlled) onClose?.()
+    else setInternalOpen(false)
+  }
+
   useEffect(() => {
-    if (!open) return
+    if (!isOpen) return
     function handleKeyDown(e) {
-      if (e.key === 'Escape') setOpen(false)
+      if (e.key === 'Escape') close()
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [open])
+  }, [isOpen])
 
   function applyPreset(preset) {
     setActivePreset(preset.name)
@@ -56,16 +65,18 @@ export default function BestForMe() {
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="font-display text-sm font-bold bg-coral hover:brightness-95 text-white px-5 py-2 rounded-lg transition-[filter] whitespace-nowrap"
-      >
-        Best for me ↗
-      </button>
+      {!controlled && (
+        <button
+          onClick={() => setInternalOpen(true)}
+          className="font-display text-sm font-bold bg-coral hover:brightness-95 text-white px-5 py-2 rounded-lg transition-[filter] whitespace-nowrap"
+        >
+          Best for me ↗
+        </button>
+      )}
 
-      {open && (
+      {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setOpen(false)} />
+          <div className="absolute inset-0 bg-black/60" onClick={close} />
 
           <div
             role="dialog"
@@ -76,7 +87,7 @@ export default function BestForMe() {
             <div className="flex items-center justify-between px-6 py-4 border-b border-line sticky top-0 bg-surface">
               <h2 className="font-display text-lg font-bold text-ink">Best for me</h2>
               <button
-                onClick={() => setOpen(false)}
+                onClick={close}
                 aria-label="Close"
                 className="text-ink-faint hover:text-ink transition-colors text-xl leading-none"
               >
