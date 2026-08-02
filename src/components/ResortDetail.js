@@ -2,13 +2,11 @@ import { conditionColor, conditionsScore, snowColor } from '../lib/conditions.js
 import ScoreBadge from './ScoreBadge.js'
 import LiftStatusCard from './LiftStatusCard.js'
 import RoadConditionsCard from './RoadConditionsCard.js'
-import WebcamsCard from './WebcamsCard.js'
+import WebcamSection from './WebcamSection.js'
 import BookmarkButton from './BookmarkButton.js'
 import WeatherIcon, { forecastDayLabel } from './WeatherIcon.js'
-import { getWebcams } from '../lib/webcams.js'
 
 export default function ResortDetail({ featured, resorts, liftStatus, roadConditions, distances = {}, savedIds = [], isLoggedIn = false }) {
-  const webcams = getWebcams(featured.name)
   const featuredScore = conditionsScore(featured.weather)
 
   return (
@@ -146,7 +144,7 @@ export default function ResortDetail({ featured, resorts, liftStatus, roadCondit
         />
 
         {/* Webcams */}
-        <WebcamsCard resortName={featured.name} webcams={webcams} />
+        <WebcamSection webcamIds={featured.webcam_ids} />
 
         {/* All resorts table */}
         <div className="bg-surface border border-line rounded-2xl overflow-hidden shadow-sm">
